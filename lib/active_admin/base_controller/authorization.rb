@@ -32,10 +32,12 @@ module ActiveAdmin
       # @param [any] subject The subject that the user is trying to perform
       #                 the action on.
       #
+      # @param [Symbol] format The format that the user is trying to request.
+      #
       # @return [Boolean]
       #
-      def authorized?(action, subject = nil)
-        active_admin_authorization.authorized?(action, subject)
+      def authorized?(action, subject = nil, format = nil)
+        active_admin_authorization.authorized?(action, subject, format)
       end
 
 
@@ -49,13 +51,16 @@ module ActiveAdmin
       # @param [any] subject The subject that the user is trying to perform
       #                 the action on.
       #
+      # @param [Symbol] format The format that the user is trying to request.
+      #
       # @return [Boolean] True if authorized, otherwise raises
       #                 an ActiveAdmin::AccessDenied.
-      def authorize!(action, subject = nil)
-        unless authorized? action, subject
+      def authorize!(action, subject = nil, format = nil)
+        unless authorized? action, subject, format
           raise ActiveAdmin::AccessDenied.new(current_active_admin_user,
                                               action,
-                                              subject)
+                                              subject,
+                                              format)
         end
       end
 

@@ -40,7 +40,7 @@ module ActiveAdmin
       def collection
         get_collection_ivar || begin
           collection = find_collection
-          authorize! Authorization::READ, active_admin_config.resource_class
+          authorize! Authorization::READ, active_admin_config.resource_class, params[:format].try(:to_sym)
           set_collection_ivar collection
         end
       end
