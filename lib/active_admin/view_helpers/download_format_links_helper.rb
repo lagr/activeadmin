@@ -4,6 +4,9 @@ module ActiveAdmin
 
       def build_download_format_links(formats = self.class.formats)
         params = request.query_parameters.except :format, :commit
+        formats = formats.select { |format| authorized?(:index, resource_class, format) }
+        return if formats.empty?
+
         div class: "download_links" do
           span I18n.t('active_admin.download')
           formats.each do |format|
