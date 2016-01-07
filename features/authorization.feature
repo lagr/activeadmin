@@ -9,7 +9,7 @@ Feature: Authorizing Access
     """
     class OnlyAuthorsAuthorization < ActiveAdmin::AuthorizationAdapter
 
-      def authorized?(action, subject = nil)
+      def authorized?(action, subject = nil, format = nil)
         case subject
 
         when normalized(Post)

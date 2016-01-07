@@ -64,3 +64,53 @@ Feature: Index Formats
     And I should not see a link to download "XML"
     And I should not see a link to download "JSON"
     And I should not see a link to download "PDF"
+
+  Scenario: View index with an authorization adapter that forbids json
+    Given an index configuration of:
+    """
+      ActiveAdmin.register Post
+    """
+    And 1 post exists
+    And a configuration of:
+    """
+    class NoJSONAuthorization < ActiveAdmin::AuthorizationAdapter
+      def authorized?(action, subject = nil, format = nil)
+        case format
+        when :json
+          false
+        else
+          true
+        end
+      end
+    end
+
+    ActiveAdmin.application.authorization_adapter = OnlyAuthorsAuthorization
+    """
+    Then I should see a link to download "CSV"
+    And I should see a link to download "XML"
+    And I should not see a link to download "JSON"
+
+  Scenario: View index with an authorization adapter that forbids all formats
+    Given an index configuration of:
+    """
+      ActiveAdmin.register Post
+    """
+    And 1 post exists
+    And a configuration of:
+    """
+    class NoJSONAuthorization < ActiveAdmin::AuthorizationAdapter
+      def authorized?(action, subject = nil, format = nil)
+        case format
+        when :json, :xml, :csv
+          false
+        else
+          true
+        end
+      end
+    end
+
+    ActiveAdmin.application.authorization_adapter = OnlyAuthorsAuthorization
+    """
+    Then I should not see a link to download "CSV"
+    And I should not see a link to download "XML"
+    And I should not see a link to download "JSON"
