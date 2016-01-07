@@ -9,9 +9,9 @@ module ActiveAdmin
 
   class PunditAdapter < AuthorizationAdapter
 
-    def authorized?(action, subject = nil)
+    def authorized?(action, subject = nil, format = nil)
       policy = retrieve_policy(subject)
-      action = format_action(action, subject)
+      action = format_action(action, subject, format)
 
       policy.respond_to?(action) && policy.public_send(action)
     end
@@ -42,13 +42,18 @@ module ActiveAdmin
       end
     end
 
-    def format_action(action, subject)
+    def format_action(action, subject, format = nil)
       # https://github.com/elabs/pundit/blob/master/lib/generators/pundit/install/templates/application_policy.rb
       case action
       when Auth::CREATE  then :create?
       when Auth::UPDATE  then :update?
-      when Auth::READ    then subject.is_a?(Class) ? :index? : :show?
       when Auth::DESTROY then subject.is_a?(Class) ? :destroy_all? : :destroy?
+      when Auth::READ
+        if subject.is_a?(Class)
+          format.nil? || format == :html ? :index? : "download_#{format}?".to_sym
+        else
+          :show?
+        end
       else "#{action}?"
       end
     end

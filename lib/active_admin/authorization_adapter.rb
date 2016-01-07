@@ -37,7 +37,7 @@ module ActiveAdmin
     end
 
     # Returns true of false depending on if the user is authorized to perform
-    # the action on the subject.
+    # the action on the subject with the given format.
     #
     # @param [Symbol] action The name of the action to perform. Usually this will be
     #        one of the `ActiveAdmin::Auth::*` symbols.
@@ -49,8 +49,10 @@ module ActiveAdmin
     #        global navigation. To deal with this nicely in a case statement, take
     #        a look at `#normalized(klasss)`
     #
+    # @param [Symbol] format The format that the user is trying to request.
+    #
     # @return [Boolean]
-    def authorized?(action, subject = nil)
+    def authorized?(action, subject = nil, format = nil)
       true
     end
 
